@@ -13,6 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    pagegraph.cpp \
+    pagenode.cpp \
+    pagerankvizwidget.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    pagegraph.h \
+    pagenode.h \
+    pagerankvizwidget.h

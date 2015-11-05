@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("Pagerank - Visualisation");
     setMinimumSize(1024, 768);
 
-
+    setCentralWidget(pageRankViz = new PageRankVizWidget(this));
 }
 
 MainWindow::~MainWindow()
