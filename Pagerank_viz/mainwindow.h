@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QToolBar>
 #include "pagerankvizwidget.h"
 
 class MainWindow : public QMainWindow
@@ -13,6 +14,7 @@ public:
     ~MainWindow();
 private:
     PageRankVizWidget* pageRankViz;
+    QAction* exploreGraphAction;
 };
 
 #endif // MAINWINDOW_H

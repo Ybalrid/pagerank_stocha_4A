@@ -8,7 +8,7 @@ PageGraph::PageGraph():
     graphicsScene = new QGraphicsScene;
 
     createDummyGraph();
-    pen.setWidth(5);
+    pen.setWidth(3);
 
 }
 
@@ -19,17 +19,17 @@ QGraphicsScene* PageGraph::getGraphicsScene()
 
 void PageGraph::createDummyGraph()
 {
-    for(int i = 0; i < 15; i++)
+    const unsigned int nb = 16;
+    for(int i = 0; i < nb; i++)
     {
-        QString url(QString("http://page") + ('A' + i) + QString(".com/index.html"));
+        QString url(QString("http://page") + ('A' + i) + QString(".com/"));
         indexedPages.push_back(new PageNode(url));
     }
 
-    for(int i = 0; i < 15 - 3; i++)
+    for(int i = 0; i < nb; i++)
     {
-        indexedPages[i]->linkTo(indexedPages[i+1]);
-        indexedPages[i+1]->linkTo(indexedPages[i+2]);
-        indexedPages[i+2]->linkTo(indexedPages[i]);
+        for(int j(0); j < 1 + rand() % 2 ; j++)
+        indexedPages[i]->linkTo(indexedPages[rand()%nb]);
     }
 }
 
@@ -43,25 +43,64 @@ PageNode* PageGraph::getFromUrl(QString url)
 
 void PageGraph::recomputeGraphicsScene()
 {
+    //Clean up what's curently on the scene
     graphicsScene->clear();
+
+    //Create visual representation of each known node in the system
     for(int i(0); i < indexedPages.size(); i++)
     {
         int x, y, w, h;
         w=h=5*SCALE;
 
-        if(i < indexedPages.size()/2)
+        if(i < indexedPages.size()/2 )
         {
-            y = 10*SCALE;
+            y = -10*SCALE;
             x = 15*SCALE*i;
         }
         else
         {
-            y = -10*SCALE;
+            y = 10*SCALE;
             x = 15*SCALE*(i - indexedPages.size()/2);
         }
+
+        x += -5 + rand() % 10*SCALE;
+        y += -5 + rand() % 10*SCALE;
+
 
         QGraphicsEllipseItem* elipse = graphicsScene->addEllipse(x,y,w,h,pen,brush);
         QGraphicsTextItem* url = graphicsScene->addText(indexedPages[i]->getUrl());
         url->setPos(x-10,y-20);
+
+        indexedPages[i]->setElipse(elipse);
+        indexedPages[i]->setUrlTag(url);
+    }
+
+    for(int i(0); i < indexedPages.size(); i++)
+    {
+        PageNode* page = indexedPages[i];
+        QRectF r =page->getVisualNode()->rect();
+        QPointF pos(r.x(), r.y());
+        pos += QPointF(r.width()/2, r.height()/2);
+
+
+
+        for(int j(0); j < page->getLinkedPagesVector().size(); j++)
+        {
+            QRectF r =  page->getLinkedPagesVector()[j]->getVisualNode()->rect();
+            QPointF endPos(r.x(), r.y());
+            endPos += QPointF(r.width()/2, r.height()/2);
+
+            graphicsScene->addLine(QLineF(pos,endPos));
+            qDebug() << "Draw a line between " << pos << " and " << endPos;
+            if(endPos.x() > pos.x())
+                graphicsScene->addLine(QLineF(endPos, endPos - QPointF(SCALE,0)), pen);
+            else
+                graphicsScene->addLine(QLineF(endPos, endPos + QPointF(SCALE,0)), pen);
+
+            if(endPos.y() > pos.y())
+                graphicsScene->addLine(QLineF(endPos, endPos - QPointF(0,SCALE)), pen);
+            else
+                graphicsScene->addLine(QLineF(endPos, endPos + QPointF(0,SCALE)), pen);
+        }
     }
 }
