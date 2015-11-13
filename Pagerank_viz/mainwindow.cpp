@@ -9,9 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(pageRankViz = new PageRankVizWidget(this));
     QToolBar* toolbar = addToolBar("ToolBar");
-    toolbar->addAction("Explore Graph");
-    toolbar->addAction("Reset");
-    toolbar->addAction("Quit");
+    exploreGraphAction =toolbar->addAction("Explore Graph");
+    resetAction = toolbar->addAction("Reset");
+    quitAction = toolbar->addAction("Quit");
+
 }
 
 MainWindow::~MainWindow()

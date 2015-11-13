@@ -15,6 +15,8 @@ public:
 private:
     PageRankVizWidget* pageRankViz;
     QAction* exploreGraphAction;
+    QAction* quitAction;
+    QAction* resetAction;
 };
 
 #endif // MAINWINDOW_H
