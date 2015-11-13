@@ -1,7 +1,8 @@
 #include "pagegraph.h"
 
 PageGraph::PageGraph():
-    brush(QBrush(Qt::red))
+    brush(QBrush(Qt::red)),
+    activeBrush(QBrush(Qt::blue))
 {
 
     //Qt Graphics:
@@ -10,6 +11,36 @@ PageGraph::PageGraph():
     createDummyGraph();
     pen.setWidth(3);
 
+}
+
+void PageGraph::createCrawlers(int nbCrawl)
+{
+    clearCrawlers();
+    for(int i(0); i < nbCrawl; i++)
+    {
+        Crawler* crawler;
+        crawlers.push_back(crawler = new Crawler);
+        crawler->goToNode(indexedPages[rand()%indexedPages.size()]);
+    }
+}
+
+void PageGraph::clearCrawlers()
+{
+    for(auto crawler : crawlers)
+        delete crawler;
+    crawlers.clear();
+}
+
+PageGraph::~PageGraph()
+{
+    for(auto crawler : crawlers)
+    delete crawler;
+}
+
+void PageGraph::debugStep()
+{
+    for(auto crawler : crawlers)
+    crawler->jump();
 }
 
 QGraphicsScene* PageGraph::getGraphicsScene()
@@ -28,7 +59,7 @@ void PageGraph::createDummyGraph()
 
     for(int i = 0; i < nb; i++)
     {
-        for(int j(0); j < 1 + rand() % 2 ; j++)
+        for(int j(0); j < 3 + rand() % 5 ; j++)
         indexedPages[i]->linkTo(indexedPages[rand()%nb]);
     }
 }
@@ -43,6 +74,8 @@ PageNode* PageGraph::getFromUrl(QString url)
 
 void PageGraph::recomputeGraphicsScene()
 {
+    //Reset the psedo-random generator
+    srand(5);
     //Clean up what's curently on the scene
     graphicsScene->clear();
 
@@ -66,8 +99,13 @@ void PageGraph::recomputeGraphicsScene()
         x += -5 + rand() % 10*SCALE;
         y += -5 + rand() % 10*SCALE;
 
+        QBrush* toUse;
+        if(indexedPages[i]->isActive())
+            toUse = &activeBrush;
+        else
+            toUse = &brush;
 
-        QGraphicsEllipseItem* elipse = graphicsScene->addEllipse(x,y,w,h,pen,brush);
+        QGraphicsEllipseItem* elipse = graphicsScene->addEllipse(x,y,w,h,pen,*toUse);
         QGraphicsTextItem* url = graphicsScene->addText(indexedPages[i]->getUrl());
         url->setPos(x-10,y-20);
 
@@ -91,7 +129,7 @@ void PageGraph::recomputeGraphicsScene()
             endPos += QPointF(r.width()/2, r.height()/2);
 
             graphicsScene->addLine(QLineF(pos,endPos));
-            qDebug() << "Draw a line between " << pos << " and " << endPos;
+            //qDebug() << "Draw a line between " << pos << " and " << endPos;
             if(endPos.x() > pos.x())
                 graphicsScene->addLine(QLineF(endPos, endPos - QPointF(SCALE,0)), pen);
             else
@@ -103,4 +141,41 @@ void PageGraph::recomputeGraphicsScene()
                 graphicsScene->addLine(QLineF(endPos, endPos + QPointF(0,SCALE)), pen);
         }
     }
+    srand(time(NULL));
+}
+
+void PageGraph::resetRank()
+{
+    for(int i(0); i < indexedPages.size(); i++)
+    {
+        auto page = indexedPages[i];
+        page->resetRank();
+    }
+}
+
+void PageGraph::writeStatusToDebug()
+{
+    qDebug() << "not normalized rank of indexed pages : ";
+    for(int i(0); i < indexedPages.size(); i++)
+    {
+        auto page = indexedPages[i];
+        qDebug() << page->getRank() << " : " << page->getUrl();
+    }
+
+}
+
+float PageGraph::getMaxRank()
+{
+    float max;
+    for(int i(0); i < indexedPages.size(); i++)
+    {
+        auto page = indexedPages[i];
+        if(page->getRank() > max) max = page->getRank();
+    }
+    return max;
+}
+
+QVector<PageNode*> PageGraph::getIndex()
+{
+    return indexedPages;
 }

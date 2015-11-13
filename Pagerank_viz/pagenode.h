@@ -21,12 +21,21 @@ public:
 
     QVector<PageNode*> getLinkedPagesVector();
 
+    void setActive(bool activeState = true);
+    bool isActive();
+
+    void resetRank();
+    void incraseRank();
+    float getRank();
+    float getNormalizedRank(float maxRank);
+
 private:
     float rank;
     QVector<PageNode*> linkedPages;
     QString url;
     QGraphicsEllipseItem* elipse;
     QGraphicsTextItem* urlTag;
+    bool active;
 };
 
 #endif // PAGENODE_H

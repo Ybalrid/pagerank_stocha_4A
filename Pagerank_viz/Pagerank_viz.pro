@@ -16,9 +16,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     pagegraph.cpp \
     pagenode.cpp \
-    pagerankvizwidget.cpp
+    pagerankvizwidget.cpp \
+    crawler.cpp \
+    exploreparam.cpp
 
 HEADERS  += mainwindow.h \
     pagegraph.h \
     pagenode.h \
-    pagerankvizwidget.h
+    pagerankvizwidget.h \
+    crawler.h \
+    exploreparam.h

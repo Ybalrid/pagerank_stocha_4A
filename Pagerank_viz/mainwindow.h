@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QToolBar>
+#include <QAction>
 #include "pagerankvizwidget.h"
 
 class MainWindow : public QMainWindow

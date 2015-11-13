@@ -3,8 +3,9 @@
 PageNode::PageNode(QString accessUrl) :
     url(accessUrl),
     elipse(nullptr),
-    urlTag(nullptr)
-
+    urlTag(nullptr),
+    active(false),
+    rank(0)
 {
 
 }
@@ -44,5 +45,33 @@ void PageNode::setUrlTag(QGraphicsTextItem *t)
 QVector<PageNode*> PageNode::getLinkedPagesVector()
 {
     return linkedPages;
+}
+
+void PageNode::setActive(bool activeState)
+{
+    active = activeState;
+}
+
+bool PageNode::isActive()
+{
+    return active;
+}
+
+void PageNode::resetRank()
+{
+    rank = 0;
+}
+void PageNode::incraseRank()
+{
+    rank++;
+}
+float PageNode::getNormalizedRank(float maxRank)
+{
+    return 10.0f * (rank/maxRank);
+}
+
+float PageNode::getRank()
+{
+    return rank;
 }
 
