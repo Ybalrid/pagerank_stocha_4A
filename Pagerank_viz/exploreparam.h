@@ -10,6 +10,7 @@
 #include <QSpinBox>
 #include <QPushButton>
 
+///Dialog box to get the exploration parameters
 class ExploreParam : public QDialog
 {
     Q_OBJECT
@@ -18,8 +19,10 @@ public:
 
 
 signals:
+    ///Signal emited when parameters are known
     void startExplore(int time, int nbcrawl, int maxIterate);
 public slots:
+    ///Slots attached to the "ok" button on the dialog
     virtual void accept();
 private:
     int timeInterval;
@@ -29,6 +32,7 @@ private:
     QVBoxLayout* mainLayout;
     QFormLayout* formLayout;
 
+    ///Man Machine Interface content
     QSpinBox* timeSpinBox;
     QSpinBox* nbCrawlerSpinBox;
     QSpinBox* maxIterateSpinBox;

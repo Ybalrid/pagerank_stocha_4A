@@ -6,6 +6,7 @@
 #include <QAction>
 #include "pagerankvizwidget.h"
 
+///Main window of the program
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
